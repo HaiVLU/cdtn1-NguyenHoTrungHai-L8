@@ -4,7 +4,7 @@
 
 **Học phần:** Chuyên đề tốt nghiệp 1 – Bài tập 1: Phân tích và Thiết kế  
 **Đề tài:** Smart CRM – Mekong Mobile  
-**Luồng nghiệp vụ:** Khảo sát hài lòng CSAT/NPS sau khi phiếu bảo hành được đóng  
+**Luồng nghiệp vụ:** L8: Khảo sát hài lòng CSAT/NPS sau khi phiếu bảo hành được đóng  
 **Track:** SE  
 **Sinh viên:** Nguyễn Hồ Trung Hải  
 **MSSV:** 2374802010125
