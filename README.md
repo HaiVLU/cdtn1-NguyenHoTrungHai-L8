@@ -40,3 +40,109 @@ Hệ thống hỗ trợ Marketing, Quản lý trung tâm và Ban giám đốc th
 - `docs/api-contract.md`: Đặc tả API dự kiến cho Track SE.
 - `docs/ai-disclosure.md`: Bảng khai báo việc sử dụng công cụ AI.
 
+## 3. Hướng dẫn chạy lại hệ thống
+
+### 3.1. Yêu cầu môi trường
+
+- Python đã được cài đặt.
+- Node.js và npm đã được cài đặt.
+- PostgreSQL đang hoạt động.
+- Đã có database `l8_csat_nps` và dữ liệu mẫu cần thiết.
+- Backend Flask và frontend React/Vite nằm trong repository.
+- File `.env.example` chứa mẫu cấu hình kết nối database; không đưa mật khẩu thật vào GitHub.
+
+### 3.2. Khởi động PostgreSQL
+
+**Bước 1:** Kiểm tra PostgreSQL có hoạt động và database `l8_csat_nps` đã tồn tại. Có thể kiểm tra bằng pgAdmin hoặc `psql`.
+
+### 3.3. Khởi động Backend Flask
+
+Thực hiện các lệnh sau trong PowerShell tại thư mục gốc repository.
+
+**Bước 1 — Tạo môi trường Python ảo:**
+
+```powershell
+python -m venv venv
+```
+
+**Bước 2 — Kích hoạt môi trường ảo:**
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+**Bước 3 — Cài đặt thư viện backend:**
+
+```powershell
+pip install -r requirements.txt
+```
+
+**Bước 4 — Tạo file cấu hình môi trường từ file mẫu nếu chưa có:**
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Nếu file `.env` đã tồn tại, không ghi đè file đó; hãy kiểm tra và cập nhật cấu hình hiện có.
+
+**Bước 5 — Cập nhật `DATABASE_URL` trong file `.env` để kết nối tới database `l8_csat_nps`:**
+
+```dotenv
+DATABASE_URL=postgresql+psycopg://USERNAME:PASSWORD@localhost:5432/l8_csat_nps
+```
+
+Thay `USERNAME` và `PASSWORD` bằng thông tin PostgreSQL trên máy.
+
+**Bước 6 — Nếu dự án đã cấu hình Flask-Migrate và có thư mục migration, cập nhật cấu trúc database:**
+
+```powershell
+flask db upgrade
+```
+
+Chỉ chạy bước này khi migration đã được thiết lập trong dự án. Không tự tạo migration mới hoặc sửa dữ liệu database chỉ để chạy theo hướng dẫn.
+
+**Bước 7 — Khởi động backend:**
+
+```powershell
+python run.py
+```
+
+Backend chạy tại `http://127.0.0.1:5000` nếu cấu hình hiện tại sử dụng cổng mặc định.
+
+**Bước 8 — Kiểm tra API health:**
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:5000/health
+```
+
+Kết quả mong đợi là phản hồi JSON thể hiện API đang hoạt động.
+
+### 3.4. Khởi động Frontend React/Vite
+
+Mở **một cửa sổ PowerShell khác** tại thư mục chứa `package.json` của frontend.
+
+**Bước 1 — Cài đặt các thư viện frontend:**
+
+```powershell
+npm install
+```
+
+**Bước 2 — Khởi động frontend ở chế độ phát triển:**
+
+```powershell
+npm run dev
+```
+
+Mở địa chỉ localhost được Vite hiển thị trong terminal để sử dụng giao diện.
+
+### 3.5. Kiểm tra sau khi khởi động
+
+- Backend Flask khởi động không có lỗi.
+- API `/health` trả về phản hồi thành công.
+- Frontend mở được trên trình duyệt.
+- Frontend kết nối đúng địa chỉ backend.
+- Các API báo cáo CSAT/NPS trả về dữ liệu.
+- Dữ liệu ticket, khảo sát và trung tâm dịch vụ được hiển thị đúng với database hiện tại.
+
+Lưu ý: Các lệnh trên giả định repository có `requirements.txt`, `run.py`, cấu hình Flask-Migrate và frontend có `package.json`. Nếu cấu trúc thực tế khác, cần điều chỉnh đường dẫn và lệnh tương ứng.
+
