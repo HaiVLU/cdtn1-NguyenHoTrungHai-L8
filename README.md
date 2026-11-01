@@ -1,17 +1,17 @@
-# Smart CRM – Mekong Mobile (BT1)
+# Smart CRM – Mekong Mobile (BT2)
 
 ## 1. Giới thiệu
 
-**Học phần:** Chuyên đề tốt nghiệp 1 – Bài tập 1: Phân tích và Thiết kế  
+**Học phần:** Chuyên đề tốt nghiệp 2  
 **Đề tài:** Smart CRM – Mekong Mobile  
-**Luồng nghiệp vụ:** L8: Khảo sát hài lòng CSAT/NPS sau khi phiếu bảo hành được đóng  
+**Luồng nghiệp vụ:** L8 – Khảo sát hài lòng CSAT/NPS sau khi phiếu bảo hành được đóng  
 **Track:** SE  
 **Sinh viên:** Nguyễn Hồ Trung Hải  
 **MSSV:** 2374802010125
 
-Repository này lưu trữ các tài liệu phân tích và thiết kế của BT1. Phạm vi hiện tại tập trung vào tài liệu đặc tả, sơ đồ thiết kế và mô hình dữ liệu; chưa triển khai mã nguồn ứng dụng.
+Hệ thống Smart CRM – Mekong Mobile được xây dựng nhằm hỗ trợ quản lý và theo dõi mức độ hài lòng của khách hàng sau khi sử dụng dịch vụ bảo hành.
 
-Hệ thống hỗ trợ Marketing, Quản lý trung tâm và Ban giám đốc theo dõi, phân tích kết quả khảo sát CSAT/NPS. Quản lý trung tâm chỉ được xem dữ liệu thuộc trung tâm được phân quyền. Số điện thoại khách hàng phải được che theo quy định.
+Hệ thống sử dụng React cho giao diện, Flask cho Backend và PostgreSQL để lưu trữ dữ liệu. Backend cung cấp REST API phục vụ quản lý khảo sát, quản lý trung tâm dịch vụ và tổng hợp báo cáo CSAT/NPS.
 
 ## 2. Cấu trúc repository
 
@@ -23,126 +23,274 @@ Hệ thống hỗ trợ Marketing, Quản lý trung tâm và Ban giám đốc th
 │   ├── architecture.drawio
 │   ├── erd.drawio
 │   ├── srs.md
+│   ├── thay-doi-thiet-ke.md
 │   ├── usecase.drawio
-│   └── wireframe.png
+│   ├── wireframe.drawio
+│   ├── wireframe.png
+│   └── test-results.jpg
+├── migrations/
+│   └── versions/
+├── src/
+│   ├── models.py
+│   ├── extensions.py
+│   ├── routes/
+│   │   ├── survey_routes.py
+│   │   ├── service_center_routes.py
+│   │   └── report_routes.py
+│   ├── services/
+│   └── repositories/
+├── tests/
+│   └── test_survey_validation.py
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   └── pages/
+│   ├── package.json
+│   └── package-lock.json
 ├── .env.example
-├── .gitignore
+├── requirements.txt
+├── run.py
+├── seed.py
 └── README.md
 ```
 
-### Mô tả các tài liệu
+### Mô tả các thành phần
 
-- `docs/srs.md`: Đặc tả yêu cầu phần mềm (SRS), bao gồm yêu cầu chức năng, User Story, yêu cầu phi chức năng, quy tắc nghiệp vụ và bảng truy vết.
-- `docs/usecase.drawio`: Sơ đồ Use Case của hệ thống.
-- `docs/architecture.drawio`: Sơ đồ kiến trúc hệ thống.
-- `docs/erd.drawio`: Sơ đồ mô hình dữ liệu ERD.
-- `docs/wireframe.png`: Wireframe các màn hình của hệ thống.
-- `docs/api-contract.md`: Đặc tả API dự kiến cho Track SE.
-- `docs/ai-disclosure.md`: Bảng khai báo việc sử dụng công cụ AI.
+- `src/models.py`: Định nghĩa các model dữ liệu.
+- `src/routes/`: Tiếp nhận và xử lý các yêu cầu HTTP.
+- `src/services/`: Xử lý nghiệp vụ và kiểm tra dữ liệu.
+- `src/repositories/`: Thực hiện truy vấn dữ liệu.
+- `migrations/`: Quản lý thay đổi cấu trúc cơ sở dữ liệu.
+- `seed.py`: Nạp dữ liệu mẫu vào database.
+- `tests/`: Chứa các bài kiểm thử Backend.
+- `frontend/src/pages/`: Các màn hình giao diện.
+- `frontend/src/api/`: Các hàm gọi REST API.
+- `docs/`: Tài liệu phân tích, thiết kế và minh chứng.
 
 ## 3. Hướng dẫn chạy lại hệ thống
 
 ### 3.1. Yêu cầu môi trường
 
-- Python đã được cài đặt.
-- Node.js và npm đã được cài đặt.
-- PostgreSQL đang hoạt động.
-- Đã có database `l8_csat_nps` và dữ liệu mẫu cần thiết.
-- Backend Flask và frontend React/Vite nằm trong repository.
-- File `.env.example` chứa mẫu cấu hình kết nối database; không đưa mật khẩu thật vào GitHub.
+- Python tương thích với các thư viện trong `requirements.txt`.
+- Node.js và npm.
+- PostgreSQL.
+- Git.
+- Trình duyệt web.
+- Database có tên `l8_csat_nps`.
 
-### 3.2. Khởi động PostgreSQL
+### 3.2. Chuẩn bị database PostgreSQL
 
-**Bước 1:** Kiểm tra PostgreSQL có hoạt động và database `l8_csat_nps` đã tồn tại. Có thể kiểm tra bằng pgAdmin hoặc `psql`.
+Mở pgAdmin hoặc PostgreSQL và tạo database:
 
-### 3.3. Khởi động Backend Flask
-
-Thực hiện các lệnh sau trong PowerShell tại thư mục gốc repository.
-
-**Bước 1 — Tạo môi trường Python ảo:**
-
-```powershell
-python -m venv venv
+```sql
+CREATE DATABASE l8_csat_nps;
 ```
 
-**Bước 2 — Kích hoạt môi trường ảo:**
+Nếu database đã tồn tại thì không cần tạo lại.
+
+### 3.3. Cài đặt và khởi động Backend
+
+Mở PowerShell tại thư mục gốc repository.
+
+**Bước 1 – Tạo môi trường Python ảo:**
 
 ```powershell
-.\venv\Scripts\Activate.ps1
+python -m venv .venv
 ```
 
-**Bước 3 — Cài đặt thư viện backend:**
+**Bước 2 – Kích hoạt môi trường:**
 
 ```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+**Bước 3 – Cài đặt thư viện:**
+
+```powershell
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-**Bước 4 — Tạo file cấu hình môi trường từ file mẫu nếu chưa có:**
+**Bước 4 – Tạo file cấu hình môi trường nếu chưa có:**
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Nếu file `.env` đã tồn tại, không ghi đè file đó; hãy kiểm tra và cập nhật cấu hình hiện có.
+Nếu file `.env` đã tồn tại, không ghi đè. Kiểm tra và cập nhật cấu hình hiện có.
 
-**Bước 5 — Cập nhật `DATABASE_URL` trong file `.env` để kết nối tới database `l8_csat_nps`:**
+**Bước 5 – Cấu hình kết nối PostgreSQL trong `.env`:**
 
-```dotenv
+```env
+SECRET_KEY=your-local-secret-key
 DATABASE_URL=postgresql+psycopg://USERNAME:PASSWORD@localhost:5432/l8_csat_nps
 ```
 
-Thay `USERNAME` và `PASSWORD` bằng thông tin PostgreSQL trên máy.
+Thay `USERNAME` và `PASSWORD` bằng thông tin PostgreSQL thực tế trên máy.
 
-**Bước 6 — Nếu dự án đã cấu hình Flask-Migrate và có thư mục migration, cập nhật cấu trúc database:**
+**Bước 6 – Áp dụng migration:**
 
 ```powershell
-flask db upgrade
+flask --app run.py db upgrade
 ```
 
-Chỉ chạy bước này khi migration đã được thiết lập trong dự án. Không tự tạo migration mới hoặc sửa dữ liệu database chỉ để chạy theo hướng dẫn.
+Lệnh này tạo và cập nhật cấu trúc các bảng theo những migration có sẵn trong dự án.
 
-**Bước 7 — Khởi động backend:**
+**Bước 7 – Nạp dữ liệu mẫu:**
+
+```powershell
+python seed.py
+```
+
+Chương trình kiểm tra dữ liệu trung tâm dịch vụ trước khi nạp. Nếu đã có dữ liệu mẫu, chương trình sẽ không nạp trùng.
+
+**Bước 8 – Khởi động Backend:**
 
 ```powershell
 python run.py
 ```
 
-Backend chạy tại `http://127.0.0.1:5000` nếu cấu hình hiện tại sử dụng cổng mặc định.
+Backend mặc định chạy tại:
 
-**Bước 8 — Kiểm tra API health:**
+```text
+http://127.0.0.1:5000
+```
+
+**Bước 9 – Kiểm tra Backend:**
+
+Mở PowerShell khác và chạy:
 
 ```powershell
 Invoke-RestMethod http://127.0.0.1:5000/health
 ```
 
-Kết quả mong đợi là phản hồi JSON thể hiện API đang hoạt động.
+Kết quả mong đợi:
 
-### 3.4. Khởi động Frontend React/Vite
-
-Mở **một cửa sổ PowerShell khác** tại thư mục chứa `package.json` của frontend.
-
-**Bước 1 — Cài đặt các thư viện frontend:**
-
-```powershell
-npm install
+```json
+{
+  "status": "ok",
+  "message": "L8 API is running"
+}
 ```
 
-**Bước 2 — Khởi động frontend ở chế độ phát triển:**
+### 3.4. Cài đặt và khởi động Frontend
+
+Mở một cửa sổ PowerShell mới.
+
+**Bước 1 – Di chuyển vào thư mục Frontend:**
+
+```powershell
+cd frontend
+```
+
+**Bước 2 – Tạo file `.env` nếu chưa có:**
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Cấu hình:
+
+```env
+VITE_API_BASE_URL=http://127.0.0.1:5000
+```
+
+**Bước 3 – Cài đặt thư viện:**
+
+```powershell
+npm ci
+```
+
+**Bước 4 – Khởi động Frontend:**
 
 ```powershell
 npm run dev
 ```
 
-Mở địa chỉ localhost được Vite hiển thị trong terminal để sử dụng giao diện.
+Truy cập địa chỉ do Vite hiển thị, thông thường:
 
-### 3.5. Kiểm tra sau khi khởi động
+```text
+http://localhost:5173
+```
 
-- Backend Flask khởi động không có lỗi.
-- API `/health` trả về phản hồi thành công.
-- Frontend mở được trên trình duyệt.
-- Frontend kết nối đúng địa chỉ backend.
-- Các API báo cáo CSAT/NPS trả về dữ liệu.
-- Dữ liệu ticket, khảo sát và trung tâm dịch vụ được hiển thị đúng với database hiện tại.
+### 3.5. Kiểm tra các màn hình
 
-Lưu ý: Các lệnh trên giả định repository có `requirements.txt`, `run.py`, cấu hình Flask-Migrate và frontend có `package.json`. Nếu cấu trúc thực tế khác, cần điều chỉnh đường dẫn và lệnh tương ứng.
+| Đường dẫn | Chức năng |
+|---|---|
+| `/` | Tổng quan CSAT/NPS |
+| `/technicians` | Báo cáo kỹ thuật viên |
+| `/surveys/:id` | Chi tiết khảo sát |
 
+### 3.6. Kiểm thử Backend
+
+Tại thư mục gốc repository, kích hoạt môi trường `.venv` và chạy:
+
+```powershell
+pytest -v
+```
+
+Các test hiện tại tập trung kiểm tra:
+
+- Dữ liệu khảo sát hợp lệ.
+- Giá trị biên CSAT/NPS.
+- Thiếu trường bắt buộc.
+- Điểm CSAT vượt giới hạn.
+- Kiểu dữ liệu không hợp lệ.
+
+### 3.7. Kiểm tra build Frontend
+
+Tại thư mục `frontend`, chạy:
+
+```powershell
+npm run build
+```
+
+Nếu build thành công, Vite tạo thư mục `dist/` chứa sản phẩm build.
+
+## 4. Công nghệ sử dụng
+
+| Thành phần | Công nghệ |
+|---|---|
+| Frontend | React, Vite |
+| Backend | Python, Flask |
+| Database | PostgreSQL |
+| ORM | Flask-SQLAlchemy |
+| Migration | Flask-Migrate |
+| API | REST API |
+| Kiểm thử | pytest |
+| Quản lý mã nguồn | Git, GitHub |
+
+## 5. Các module chức năng
+
+- **Survey Module:** Quản lý danh sách, chi tiết, tạo, cập nhật và xóa khảo sát.
+- **Service Center Module:** Quản lý thông tin trung tâm dịch vụ.
+- **Report Module:** Tổng hợp và thống kê dữ liệu CSAT/NPS theo thời gian, trung tâm và kỹ thuật viên.
+- **Frontend Module:** Hiển thị tổng quan, báo cáo kỹ thuật viên và chi tiết khảo sát.
+
+## 6. Trạng thái tiến độ hiện tại
+
+Các module và chức năng được mô tả trong repository cần được đối chiếu với source code và kết quả chạy thực tế tại thời điểm nộp bài.
+
+- Backend Flask và cấu trúc phân lớp.
+- Kết nối PostgreSQL thông qua SQLAlchemy.
+- Migration quản lý cấu trúc database.
+- Dữ liệu mẫu thông qua `seed.py`.
+- API khảo sát và API trung tâm dịch vụ.
+- API báo cáo CSAT/NPS.
+- Frontend React gồm các màn hình tổng quan, báo cáo kỹ thuật viên và chi tiết khảo sát.
+- Kiểm thử kiểm tra dữ liệu đầu vào bằng pytest.
+
+Một số giới hạn hiện tại:
+
+- Trang chi tiết khảo sát chưa nhận đầy đủ thông tin trung tâm, kỹ thuật viên và khách hàng từ API.
+- Bản ghi DEMO trên trang kỹ thuật viên là dữ liệu minh họa, không phải dữ liệu thật từ PostgreSQL.
+- Kiểm thử hiện tại tập trung vào hàm kiểm tra dữ liệu khảo sát, chưa đại diện cho toàn bộ kiểm thử tích hợp và giao diện.
+- Chỉ số NPS trong API hiện tại đang được trả về dưới dạng điểm trung bình trên thang 0–10, chưa phải chỉ số NPS tổng hợp theo tỷ lệ Promoters trừ Detractors.
+
+## 7. Bảo mật và cấu hình
+
+- Không commit file `.env` lên GitHub.
+- Sử dụng `.env.example` để cung cấp cấu hình mẫu.
+- Không đưa mật khẩu database hoặc thông tin bí mật vào source code.
+- Không commit thư mục môi trường ảo, `node_modules/` và sản phẩm build không cần thiết.

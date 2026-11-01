@@ -1,0 +1,70 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="Dbh9-m-0_RTjfDdjmNYL">
+    <mxGraphModel dx="1030" dy="567" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <UserObject label="" plantUmlData="{&#xa;  &quot;data&quot;: &quot;\n@startuml\ntitle SO DO KIEN TRUC HE THONG\n\ntop to bottom direction\n\nskinparam backgroundColor #000000\nskinparam shadowing false\nskinparam defaultFontName Arial\nskinparam defaultFontColor #E5E7EB\nskinparam ArrowColor #D1D5DB\nskinparam ArrowThickness 1.5\nskinparam packageStyle rectangle\nskinparam roundCorner 12\n\nskinparam rectangle {\n    BorderColor #202938\n    FontColor #E5E7EB\n    FontSize 14\n    FontStyle bold\n}\n\nskinparam package {\n    BorderColor #202938\n    FontColor #E5E7EB\n    FontSize 15\n    FontStyle bold\n}\n\nskinparam database {\n    BorderColor #4A3B0B\n    BackgroundColor #191300\n    FontColor #E5E7EB\n}\n\n&#39; =====================================\n&#39; FRONTEND\n&#39; =====================================\n\nrectangle \&quot;&lt;b&gt;Frontend – React&lt;/b&gt;\\nGiao diện danh sách / chi tiết / tiếp nhận khảo sát\&quot; as FE #08111F\n\n&#39; =====================================\n&#39; BACKEND\n&#39; =====================================\n\npackage \&quot;&lt;b&gt;Backend – Flask&lt;/b&gt;\&quot; as BE #001A12 {\n\n    together {\n        rectangle \&quot;&lt;b&gt;Routes&lt;/b&gt;\\nNhận request\&quot; as ROUTES #08111F\n\n        rectangle \&quot;&lt;b&gt;Services&lt;/b&gt;\\nXử lý nghiệp vụ\&quot; as SERVICES #08111F\n\n        rectangle \&quot;&lt;b&gt;Repositories&lt;/b&gt;\\nTruy vấn dữ liệu\&quot; as REPOS #08111F\n    }\n\n    ROUTES -right[hidden]-&gt; SERVICES\n    SERVICES -right[hidden]-&gt; REPOS\n\n    ROUTES --&gt; SERVICES\n    SERVICES --&gt; REPOS\n}\n\n&#39; =====================================\n&#39; DATABASE\n&#39; =====================================\n\ndatabase \&quot;&lt;b&gt;PostgreSQL Database&lt;/b&gt;\\nLưu trữ dữ liệu hệ thống\&quot; as DB\n\n&#39; =====================================\n&#39; CONNECTIONS\n&#39; =====================================\n\nFE -down-&gt; BE : HTTP Request / REST API\n\nBE -down-&gt; DB\n\n@enduml\n&quot;,&#xa;  &quot;config&quot;: null&#xa;}" id="whHCf49WS-qFSYS4wGri-1">
+          <mxCell connectable="0" parent="1" style="group;transparentBounds=1;editIcon=1;lockedGroup=0;groupPadding=10;" vertex="1">
+            <mxGeometry as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;b&gt;Frontend – React&lt;/b&gt;&lt;br&gt;Giao diện danh sách / chi tiết / tiếp nhận khảo sát" plantUmlId="n_0" plantUmlBaseStyle="rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=1;fillColor=#08111F;strokeColor=#202938;whiteSpace=wrap;fontSize=14;shadow=0;fontColor=#E5E7EB;fontFamily=Arial;fontStyle=1;html=1;" plantUmlBaseValue="&lt;b&gt;Frontend – React&lt;/b&gt;&lt;br&gt;Giao diện danh sách / chi tiết / tiếp nhận khảo sát" id="whHCf49WS-qFSYS4wGri-2">
+          <mxCell parent="whHCf49WS-qFSYS4wGri-1" style="rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=1;whiteSpace=wrap;fontSize=14;shadow=0;fontFamily=Arial;fontStyle=1;html=1;" vertex="1">
+            <mxGeometry height="49" width="366" x="143" y="66" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;b&gt;PostgreSQL Database&lt;/b&gt;&lt;br&gt;Lưu trữ dữ liệu hệ thống" plantUmlId="n_1" plantUmlBaseStyle="shape=cylinder3;size=10;boundedLbl=1;backgroundOutline=1;fillColor=#191300;strokeColor=#4A3B0B;fontSize=14;whiteSpace=wrap;rounded=1;arcSize=12;absoluteArcSize=1;shadow=0;fontColor=#E5E7EB;fontFamily=Arial;html=1;" plantUmlBaseValue="&lt;b&gt;PostgreSQL Database&lt;/b&gt;&lt;br&gt;Lưu trữ dữ liệu hệ thống" id="whHCf49WS-qFSYS4wGri-3">
+          <mxCell parent="whHCf49WS-qFSYS4wGri-1" style="shape=cylinder3;size=10;boundedLbl=1;backgroundOutline=1;fontSize=14;whiteSpace=wrap;rounded=1;arcSize=12;absoluteArcSize=1;shadow=0;fontFamily=Arial;html=1;" vertex="1">
+            <mxGeometry height="95" width="175" x="238.5" y="330" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;b&gt;Backend – Flask&lt;/b&gt;" plantUmlId="c_2" plantUmlBaseStyle="rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#001A12;strokeColor=#202938;verticalAlign=top;align=center;spacingTop=-4;fontSize=14;fontStyle=1;whiteSpace=wrap;shadow=0;fontColor=#E5E7EB;fontFamily=Arial;html=1;" plantUmlBaseValue="&lt;b&gt;Backend – Flask&lt;/b&gt;" id="whHCf49WS-qFSYS4wGri-4">
+          <mxCell parent="whHCf49WS-qFSYS4wGri-1" style="rounded=1;absoluteArcSize=1;arcSize=12;verticalAlign=top;align=center;spacingTop=-4;fontSize=14;fontStyle=1;whiteSpace=wrap;shadow=0;fontFamily=Arial;html=1;" vertex="1">
+            <mxGeometry height="95" width="512" x="70" y="175" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;b&gt;Routes&lt;/b&gt;&lt;br&gt;Nhận request" plantUmlId="n_3" plantUmlBaseStyle="rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=1;fillColor=#08111F;strokeColor=#202938;whiteSpace=wrap;fontSize=14;shadow=0;fontColor=#E5E7EB;fontFamily=Arial;fontStyle=1;html=1;" plantUmlBaseValue="&lt;b&gt;Routes&lt;/b&gt;&lt;br&gt;Nhận request" id="whHCf49WS-qFSYS4wGri-5">
+          <mxCell parent="whHCf49WS-qFSYS4wGri-4" style="rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=1;whiteSpace=wrap;fontSize=14;shadow=0;fontFamily=Arial;fontStyle=1;html=1;" vertex="1">
+            <mxGeometry height="49" width="126" x="15" y="34" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;b&gt;Services&lt;/b&gt;&lt;br&gt;Xử lý nghiệp vụ" plantUmlId="n_4" plantUmlBaseStyle="rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=1;fillColor=#08111F;strokeColor=#202938;whiteSpace=wrap;fontSize=14;shadow=0;fontColor=#E5E7EB;fontFamily=Arial;fontStyle=1;html=1;" plantUmlBaseValue="&lt;b&gt;Services&lt;/b&gt;&lt;br&gt;Xử lý nghiệp vụ" id="whHCf49WS-qFSYS4wGri-6">
+          <mxCell parent="whHCf49WS-qFSYS4wGri-4" style="rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=1;whiteSpace=wrap;fontSize=14;shadow=0;fontFamily=Arial;fontStyle=1;html=1;" vertex="1">
+            <mxGeometry height="49" width="139" x="176" y="34" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;b&gt;Repositories&lt;/b&gt;&lt;br&gt;Truy vấn dữ liệu" plantUmlId="n_5" plantUmlBaseStyle="rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=1;fillColor=#08111F;strokeColor=#202938;whiteSpace=wrap;fontSize=14;shadow=0;fontColor=#E5E7EB;fontFamily=Arial;fontStyle=1;html=1;" plantUmlBaseValue="&lt;b&gt;Repositories&lt;/b&gt;&lt;br&gt;Truy vấn dữ liệu" id="whHCf49WS-qFSYS4wGri-7">
+          <mxCell parent="whHCf49WS-qFSYS4wGri-4" style="rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=1;whiteSpace=wrap;fontSize=14;shadow=0;fontFamily=Arial;fontStyle=1;html=1;" vertex="1">
+            <mxGeometry height="49" width="147" x="350" y="34" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" plantUmlId="e_6" plantUmlBaseStyle="strokeColor=#D1D5DB;fontColor=#E5E7EB;fontSize=13;html=1;endArrow=classicThin;endFill=1;strokeWidth=1.5;fontFamily=Arial;curved=0;rounded=0;endSize=6;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;" plantUmlBaseValue="" id="whHCf49WS-qFSYS4wGri-8">
+          <mxCell edge="1" parent="whHCf49WS-qFSYS4wGri-4" source="whHCf49WS-qFSYS4wGri-5" style="fontColor=#E5E7EB;fontSize=13;html=1;endArrow=classicThin;endFill=1;strokeWidth=1.5;fontFamily=Arial;curved=0;rounded=0;endSize=6;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;" target="whHCf49WS-qFSYS4wGri-6">
+            <mxGeometry relative="1" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" plantUmlId="e_7" plantUmlBaseStyle="strokeColor=#D1D5DB;fontColor=#E5E7EB;fontSize=13;html=1;endArrow=classicThin;endFill=1;strokeWidth=1.5;fontFamily=Arial;curved=0;rounded=0;endSize=6;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;" plantUmlBaseValue="" id="whHCf49WS-qFSYS4wGri-9">
+          <mxCell edge="1" parent="whHCf49WS-qFSYS4wGri-4" source="whHCf49WS-qFSYS4wGri-6" style="fontColor=#E5E7EB;fontSize=13;html=1;endArrow=classicThin;endFill=1;strokeWidth=1.5;fontFamily=Arial;curved=0;rounded=0;endSize=6;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;" target="whHCf49WS-qFSYS4wGri-7">
+            <mxGeometry relative="1" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="HTTP Request / REST API" plantUmlId="e_8" plantUmlBaseStyle="strokeColor=#D1D5DB;fontColor=#E5E7EB;fontSize=13;html=1;labelBackgroundColor=#FFFFFF;labelPosition=right;align=left;endArrow=classicThin;endFill=1;strokeWidth=1.5;fontFamily=Arial;curved=0;rounded=0;endSize=6;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;" plantUmlBaseValue="HTTP Request / REST API" id="whHCf49WS-qFSYS4wGri-10">
+          <mxCell edge="1" parent="whHCf49WS-qFSYS4wGri-1" source="whHCf49WS-qFSYS4wGri-2" style="fontColor=light-dark(#E5E7EB,#FFFFFF);fontSize=13;html=1;labelBackgroundColor=#FFFFFF;labelPosition=right;align=left;endArrow=classicThin;endFill=1;strokeWidth=1.5;fontFamily=Arial;curved=0;rounded=0;endSize=6;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;" target="whHCf49WS-qFSYS4wGri-4">
+            <mxGeometry relative="1" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" plantUmlId="e_9" plantUmlBaseStyle="strokeColor=#D1D5DB;fontColor=#E5E7EB;fontSize=13;html=1;endArrow=classicThin;endFill=1;strokeWidth=1.5;fontFamily=Arial;curved=0;rounded=0;endSize=6;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;" plantUmlBaseValue="" id="whHCf49WS-qFSYS4wGri-11">
+          <mxCell edge="1" parent="whHCf49WS-qFSYS4wGri-1" source="whHCf49WS-qFSYS4wGri-4" style="fontColor=#E5E7EB;fontSize=13;html=1;endArrow=classicThin;endFill=1;strokeWidth=1.5;fontFamily=Arial;curved=0;rounded=0;endSize=6;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;" target="whHCf49WS-qFSYS4wGri-3">
+            <mxGeometry relative="1" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="SO DO KIEN TRUC HE THONG" plantUmlId="title_10" plantUmlBaseStyle="text;html=1;fillColor=none;strokeColor=none;fontSize=14;fontStyle=1;fontColor=#E5E7EB;align=center;verticalAlign=middle;fontFamily=Arial;" plantUmlBaseValue="SO DO KIEN TRUC HE THONG" id="whHCf49WS-qFSYS4wGri-12">
+          <mxCell parent="whHCf49WS-qFSYS4wGri-1" style="text;html=1;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;fontFamily=Arial;" vertex="1">
+            <mxGeometry height="24" width="194" x="229" y="30" as="geometry" />
+          </mxCell>
+        </UserObject>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
