@@ -43,8 +43,19 @@ def create_app():
     # Import models
     from . import models
 
+    # Import và đăng ký các Blueprint
     from .routes.survey_routes import survey_bp
-    app.register_blueprint(survey_bp, url_prefix="/api/surveys")
+    from .routes.service_center_routes import service_center_bp
+
+    app.register_blueprint(
+        survey_bp, 
+        url_prefix="/api/surveys"
+    )
+    
+    app.register_blueprint(
+        service_center_bp, 
+        url_prefix="/api/service-centers"
+    )
 
     @app.get("/health")
     def health():
