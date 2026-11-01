@@ -18,8 +18,13 @@ with app.app_context():
     if db.session.query(ServiceCenter).first():
         print("Đã có dữ liệu mẫu. Không nạp trùng.")
     else:
-        center1 = ServiceCenter(center_name="Trung tâm Quận 10")
-        center2 = ServiceCenter(center_name="Trung tâm Cần Thơ")
+        center1 = ServiceCenter(
+            center_name="Trung tâm Quận 10"
+        )
+        center2 = ServiceCenter(
+            center_name="Trung tâm Cần Thơ"
+        )
+
         db.session.add_all([center1, center2])
         db.session.flush()
 
@@ -41,7 +46,12 @@ with app.app_context():
             phone="0900000002",
         )
 
-        db.session.add_all([tech1, tech2, customer1, customer2])
+        db.session.add_all([
+            tech1,
+            tech2,
+            customer1,
+            customer2,
+        ])
         db.session.flush()
 
         today = date.today()
@@ -53,21 +63,25 @@ with app.app_context():
             quarter=quarter,
             year=today.year,
         )
+
         db.session.add(date_record)
         db.session.flush()
 
+        # Ticket 1: sử dụng trạng thái CLOSED
         ticket1 = Ticket(
             customer_id=customer1.customer_id,
             center_id=center1.center_id,
             technician_id=tech1.technician_id,
-            status="ĐÃ ĐÓNG",
+            status="CLOSED",
             closed_at=datetime.now(),
         )
+
+        # Ticket 2: sử dụng trạng thái CLOSED
         ticket2 = Ticket(
             customer_id=customer2.customer_id,
             center_id=center2.center_id,
             technician_id=tech2.technician_id,
-            status="ĐÃ ĐÓNG",
+            status="CLOSED",
             closed_at=datetime.now(),
         )
 
@@ -82,6 +96,7 @@ with app.app_context():
             comment="Dịch vụ tốt.",
             responded_at=datetime.now(),
         )
+
         survey2 = SurveyResponse(
             ticket_id=ticket2.ticket_id,
             date_id=date_record.date_id,
