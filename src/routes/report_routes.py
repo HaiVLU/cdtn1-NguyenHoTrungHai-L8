@@ -34,6 +34,7 @@ def parse_date(value, field_name):
 
 def get_records():
     """Get survey responses associated with closed tickets."""
+
     query = (
         db.session.query(
             SurveyResponse.response_id,
@@ -63,14 +64,23 @@ def get_records():
         )
     )
 
-    # PostgreSQL stores the actual status as CLOSED.
+    # Chỉ lấy khảo sát chưa bị xóa mềm.
     query = query.filter(
-        func.upper(func.trim(Ticket.status)) == "CLOSED"
+        SurveyResponse.is_deleted.is_(False)
     )
 
+    # Chấp nhận trạng thái chuẩn và dữ liệu cũ.
+    query = query.filter(
+        func.upper(func.trim(Ticket.status)).in_(
+            ["CLOSED", "ĐÃ ĐÓNG"]
+        )
+    )
+
+    # Lọc ngày bắt đầu và ngày kết thúc.
     start_date = parse_date(
         request.args.get("startDate"), "startDate"
     )
+
     end_date = parse_date(
         request.args.get("endDate"), "endDate"
     )
@@ -90,13 +100,16 @@ def get_records():
             DimDate.full_date <= end_date
         )
 
+    # Lọc trung tâm dịch vụ.
     center_id = request.args.get("centerId")
 
     if center_id:
         try:
             center_id = int(center_id)
+
             if center_id <= 0:
                 raise ValueError
+
         except (ValueError, TypeError):
             raise ValueError(
                 "centerId must be a positive integer."
@@ -112,10 +125,8 @@ def get_records():
 def calculate_metrics(records):
     """
     Calculate average CSAT and average survey rating on a 1–10 scale.
-
-    Note: nps_score is averaged here to display the requested 1–10
-    rating, rather than the standard NPS index (-100 to 100).
     """
+
     count = len(records)
 
     if count == 0:
@@ -143,14 +154,20 @@ def calculate_metrics(records):
     ]
 
     average_score = (
-        round(sum(valid_scores) / len(valid_scores), 2)
+        round(
+            sum(valid_scores) / len(valid_scores),
+            2
+        )
         if valid_scores
         else None
     )
 
-    # Display average score on the requested 1–10 scale.
+    # Hiển thị điểm NPS trung bình trên thang 1–10.
     nps_score = (
-        round(sum(valid_nps) / len(valid_nps), 2)
+        round(
+            sum(valid_nps) / len(valid_nps),
+            2
+        )
         if valid_nps
         else None
     )
@@ -175,6 +192,7 @@ def error_response(message, status_code=400):
 
 def handle_report_error(exc):
     """Log errors without requiring a Windows terminal to encode Unicode."""
+
     logger.error(
         "Report API failed: %s",
         str(exc).encode(
@@ -194,7 +212,10 @@ def handle_report_error(exc):
 def summary():
     try:
         records = get_records()
-        return {"data": calculate_metrics(records)}, 200
+
+        return {
+            "data": calculate_metrics(records)
+        }, 200
 
     except ValueError as exc:
         return error_response(str(exc), 400)
@@ -207,6 +228,7 @@ def summary():
 def trend():
     try:
         records = get_records()
+
         group_by = request.args.get(
             "groupBy", "day"
         ).lower()
@@ -234,6 +256,7 @@ def trend():
         items = []
 
         for period, group_records in sorted(groups.items()):
+
             metrics = calculate_metrics(group_records)
 
             items.append({
@@ -243,7 +266,11 @@ def trend():
                 "nps": metrics["nps"],
             })
 
-        return {"data": {"items": items}}, 200
+        return {
+            "data": {
+                "items": items
+            }
+        }, 200
 
     except ValueError as exc:
         return error_response(str(exc), 400)
@@ -256,9 +283,11 @@ def trend():
 def centers():
     try:
         records = get_records()
+
         grouped = {}
 
         for row in records:
+
             item = grouped.setdefault(
                 row.center_id,
                 {
@@ -273,10 +302,18 @@ def centers():
         items = []
 
         for item in grouped.values():
-            metrics = calculate_metrics(item.pop("records"))
-            items.append({**item, **metrics})
 
-        # Include centers without surveys in the selected period.
+            metrics = calculate_metrics(
+                item.pop("records")
+            )
+
+            items.append({
+                **item,
+                **metrics
+            })
+
+        # Bao gồm cả trung tâm chưa có khảo sát
+        # trong khoảng thời gian được chọn.
         existing_ids = {
             item["centerId"] for item in items
         }
@@ -286,7 +323,9 @@ def centers():
         ).all()
 
         for center in all_centers:
+
             if center.center_id not in existing_ids:
+
                 items.append({
                     "centerId": center.center_id,
                     "centerName": center.center_name,
@@ -313,9 +352,11 @@ def centers():
 def technicians():
     try:
         records = get_records()
+
         grouped = {}
 
         for row in records:
+
             if row.technician_id is None:
                 continue
 
@@ -335,8 +376,15 @@ def technicians():
         items = []
 
         for item in grouped.values():
-            metrics = calculate_metrics(item.pop("records"))
-            items.append({**item, **metrics})
+
+            metrics = calculate_metrics(
+                item.pop("records")
+            )
+
+            items.append({
+                **item,
+                **metrics
+            })
 
         return {
             "data": {
