@@ -18,6 +18,8 @@ Hệ thống sử dụng React cho giao diện, Flask cho Backend và PostgreSQL
 ```text
 .
 ├── docs/
+│   ├── 01-get-surveys.jpg
+│   ├── 02-get-health.jpg
 │   ├── ai-disclosure.md
 │   ├── api-contract.md
 │   ├── architecture.drawio
@@ -49,6 +51,7 @@ Hệ thống sử dụng React cho giao diện, Flask cho Backend và PostgreSQL
 │   ├── package.json
 │   └── package-lock.json
 ├── .env.example
+├── .gitignore
 ├── requirements.txt
 ├── run.py
 ├── seed.py
@@ -58,6 +61,7 @@ Hệ thống sử dụng React cho giao diện, Flask cho Backend và PostgreSQL
 ### Mô tả các thành phần
 
 - `src/models.py`: Định nghĩa các model dữ liệu.
+- `src/extensions.py`: Khởi tạo và quản lý các extension của ứng dụng.
 - `src/routes/`: Tiếp nhận và xử lý các yêu cầu HTTP.
 - `src/services/`: Xử lý nghiệp vụ và kiểm tra dữ liệu.
 - `src/repositories/`: Thực hiện truy vấn dữ liệu.
@@ -72,12 +76,21 @@ Hệ thống sử dụng React cho giao diện, Flask cho Backend và PostgreSQL
 
 ### 3.1. Yêu cầu môi trường
 
+Máy tính cần cài đặt:
+
 - Python tương thích với các thư viện trong `requirements.txt`.
 - Node.js và npm.
 - PostgreSQL.
 - Git.
+- Visual Studio Code hoặc IDE tương đương.
+- Postman hoặc curl để kiểm thử API.
 - Trình duyệt web.
-- Database có tên `l8_csat_nps`.
+
+Database sử dụng:
+
+```text
+l8_csat_nps
+```
 
 ### 3.2. Chuẩn bị database PostgreSQL
 
@@ -93,26 +106,26 @@ Nếu database đã tồn tại thì không cần tạo lại.
 
 Mở PowerShell tại thư mục gốc repository.
 
-**Bước 1 – Tạo môi trường Python ảo:**
+**Bước 1 – Tạo môi trường Python ảo**
 
 ```powershell
 python -m venv .venv
 ```
 
-**Bước 2 – Kích hoạt môi trường:**
+**Bước 2 – Kích hoạt môi trường**
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-**Bước 3 – Cài đặt thư viện:**
+**Bước 3 – Cài đặt thư viện**
 
 ```powershell
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-**Bước 4 – Tạo file cấu hình môi trường nếu chưa có:**
+**Bước 4 – Tạo file cấu hình môi trường nếu chưa có**
 
 ```powershell
 Copy-Item .env.example .env
@@ -120,7 +133,7 @@ Copy-Item .env.example .env
 
 Nếu file `.env` đã tồn tại, không ghi đè. Kiểm tra và cập nhật cấu hình hiện có.
 
-**Bước 5 – Cấu hình kết nối PostgreSQL trong `.env`:**
+**Bước 5 – Cấu hình kết nối PostgreSQL trong `.env`**
 
 ```env
 SECRET_KEY=your-local-secret-key
@@ -129,7 +142,7 @@ DATABASE_URL=postgresql+psycopg://USERNAME:PASSWORD@localhost:5432/l8_csat_nps
 
 Thay `USERNAME` và `PASSWORD` bằng thông tin PostgreSQL thực tế trên máy.
 
-**Bước 6 – Áp dụng migration:**
+**Bước 6 – Áp dụng migration**
 
 ```powershell
 flask --app run.py db upgrade
@@ -137,7 +150,7 @@ flask --app run.py db upgrade
 
 Lệnh này tạo và cập nhật cấu trúc các bảng theo những migration có sẵn trong dự án.
 
-**Bước 7 – Nạp dữ liệu mẫu:**
+**Bước 7 – Nạp dữ liệu mẫu**
 
 ```powershell
 python seed.py
@@ -145,7 +158,7 @@ python seed.py
 
 Chương trình kiểm tra dữ liệu trung tâm dịch vụ trước khi nạp. Nếu đã có dữ liệu mẫu, chương trình sẽ không nạp trùng.
 
-**Bước 8 – Khởi động Backend:**
+**Bước 8 – Khởi động Backend**
 
 ```powershell
 python run.py
@@ -157,9 +170,9 @@ Backend mặc định chạy tại:
 http://127.0.0.1:5000
 ```
 
-**Bước 9 – Kiểm tra Backend:**
+**Bước 9 – Kiểm tra Backend**
 
-Mở PowerShell khác và chạy:
+Mở một cửa sổ PowerShell khác và chạy:
 
 ```powershell
 Invoke-RestMethod http://127.0.0.1:5000/health
@@ -174,35 +187,38 @@ Kết quả mong đợi:
 }
 ```
 
+Các endpoint kiểm tra:
+
+- `GET /health`: Kiểm tra trạng thái hoạt động của API.
+- `GET /api/surveys`: Lấy danh sách khảo sát.
+
 ### 3.4. Cài đặt và khởi động Frontend
 
 Mở một cửa sổ PowerShell mới.
 
-**Bước 1 – Di chuyển vào thư mục Frontend:**
+**Bước 1 – Di chuyển vào thư mục Frontend**
 
 ```powershell
 cd frontend
 ```
 
-**Bước 2 – Tạo file `.env` nếu chưa có:**
+**Bước 2 – Tạo file `.env` nếu chưa có**
 
-```powershell
-Copy-Item .env.example .env
-```
-
-Cấu hình:
+Tạo file `.env` trong thư mục `frontend` và cấu hình:
 
 ```env
 VITE_API_BASE_URL=http://127.0.0.1:5000
 ```
 
-**Bước 3 – Cài đặt thư viện:**
+Nếu đã có file `.env`, kiểm tra và cập nhật giá trị phù hợp, không ghi đè cấu hình hiện tại.
+
+**Bước 3 – Cài đặt thư viện**
 
 ```powershell
 npm ci
 ```
 
-**Bước 4 – Khởi động Frontend:**
+**Bước 4 – Khởi động Frontend**
 
 ```powershell
 npm run dev
@@ -270,18 +286,29 @@ Nếu build thành công, Vite tạo thư mục `dist/` chứa sản phẩm buil
 
 ## 6. Trạng thái tiến độ hiện tại
 
-Các module và chức năng được mô tả trong repository cần được đối chiếu với source code và kết quả chạy thực tế tại thời điểm nộp bài.
+### 6.1. Các hạng mục đã triển khai
 
-- Backend Flask và cấu trúc phân lớp.
-- Kết nối PostgreSQL thông qua SQLAlchemy.
-- Migration quản lý cấu trúc database.
-- Dữ liệu mẫu thông qua `seed.py`.
-- API khảo sát và API trung tâm dịch vụ.
-- API báo cáo CSAT/NPS.
-- Frontend React gồm các màn hình tổng quan, báo cáo kỹ thuật viên và chi tiết khảo sát.
-- Kiểm thử kiểm tra dữ liệu đầu vào bằng pytest.
+- Đã xây dựng bộ khung ứng dụng Flask cho bài tập BT2, Track SE.
+- Đã cấu hình kết nối cơ sở dữ liệu thông qua biến môi trường `DATABASE_URL`.
+- Đã tích hợp Flask-SQLAlchemy và Flask-Migrate trong ứng dụng.
+- Đã tổ chức mã nguồn theo các lớp `routes`, `services` và `repositories`.
+- Đã khai báo Blueprint cho module khảo sát tại `/api/surveys`.
+- Đã xây dựng các API quản lý khảo sát.
+- Đã xây dựng API quản lý trung tâm dịch vụ.
+- Đã triển khai API báo cáo CSAT/NPS.
+- Đã xây dựng giao diện Frontend bằng React.
+- Đã khai báo endpoint `GET /health` để kiểm tra trạng thái hoạt động của ứng dụng.
+- Đã chuẩn bị cấu hình môi trường qua `.env` và `.env.example`.
+- Đã cấu hình `.gitignore` để loại trừ các file và thư mục không cần thiết.
 
-Một số giới hạn hiện tại:
+### 6.2. Kiểm thử và minh chứng
+
+- Đã xây dựng các test kiểm tra dữ liệu khảo sát bằng pytest.
+- Đã chuẩn bị ảnh minh chứng kiểm thử API trong thư mục `docs/`.
+- Đã kiểm tra API sức khỏe hệ thống và API danh sách khảo sát.
+- Đã chuẩn bị tài liệu thiết kế, API Contract và tài liệu khai báo sử dụng AI.
+
+### 6.3. Các giới hạn hiện tại
 
 - Trang chi tiết khảo sát chưa nhận đầy đủ thông tin trung tâm, kỹ thuật viên và khách hàng từ API.
 - Bản ghi DEMO trên trang kỹ thuật viên là dữ liệu minh họa, không phải dữ liệu thật từ PostgreSQL.
@@ -293,4 +320,13 @@ Một số giới hạn hiện tại:
 - Không commit file `.env` lên GitHub.
 - Sử dụng `.env.example` để cung cấp cấu hình mẫu.
 - Không đưa mật khẩu database hoặc thông tin bí mật vào source code.
-- Không commit thư mục môi trường ảo, `node_modules/` và sản phẩm build không cần thiết.
+- Không commit thư mục môi trường ảo `.venv/`, `venv/`.
+- Không commit thư mục `node_modules/`.
+- Không commit các sản phẩm build không cần thiết.
+- Không công khai thông tin xác thực hoặc khóa bí mật trong repository.
+
+---
+
+**Dự án:** Smart CRM – Mekong Mobile  
+**Học phần:** Chuyên đề tốt nghiệp 2  
+**Track:** Software Engineering (SE)
