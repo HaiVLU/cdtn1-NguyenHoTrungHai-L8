@@ -243,7 +243,7 @@ http://localhost:5173
 Tại thư mục gốc repository, kích hoạt môi trường `.venv` và chạy:
 
 ```powershell
-pytest -v
+python -m pytest -o pythonpath=. -v
 ```
 
 Các test hiện tại tập trung kiểm tra:
