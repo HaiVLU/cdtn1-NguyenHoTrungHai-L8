@@ -1,56 +1,70 @@
+
 # TEST REPORT – SMART CRM MEKONG MOBILE (L8)
 
-## 1. Thông tin
-- Module: Kiểm tra dữ liệu khảo sát CSAT/NPS và quy tắc QT-10.
-- Framework: pytest.
-- File kiểm thử: `tests/test_survey_validation.py`.
-- Test Plan: [`test-plan.md`](test-plan.md).
+## 1. Test Information
 
-## 2. Phạm vi đã xây dựng
-Bộ test được mở rộng từ 5 lên **38 trường hợp pytest** (các ca tham số hóa được tính riêng), gồm:
-- Positive: dữ liệu hợp lệ và comment tùy chọn.
-- Boundary: CSAT ở hai đầu 1–5 và NPS ở hai đầu 0–10.
-- Negative: body không phải object, thiếu trường, sai kiểu, ID không hợp lệ, điểm ngoài miền và comment sai kiểu.
-- Chất lượng dữ liệu / quy tắc nghiệp vụ: ticket tồn tại và đã đóng, ngày khảo sát tồn tại, chống khảo sát trùng, cập nhật cùng bản ghi.
-- Tái lập: cùng dữ liệu được xác thực lặp lại cho kết quả giống nhau.
+- Project: Smart CRM – Mekong Mobile
+- Module: CSAT/NPS Survey
+- Track: Software Engineering (SE)
+- Framework: pytest
+- Test File: tests/test_survey_validation.py
+- Test Plan: test-plan.md
 
-## 3. Kết quả thực thi – cần cập nhật sau khi chạy trên máy dự án
-**Không điền số PASS/FAIL trước khi thực thi bộ test mới.** Source được kiểm tra trong môi trường phân tích không có đủ các dependency Flask của dự án nên không thể xác nhận kết quả chạy tại đây.
+## 2. Test Case Results
 
-Chạy lệnh sau trong Windows PowerShell tại thư mục gốc, khi `.venv` đã kích hoạt và dependencies đã cài:
-```powershell
-python -m pytest -o pythonpath=. -v
-```
+| ID | Preconditions | Test Steps | Test Data | Expected Result | Priority | Actual Result | Status |
+|---|---|---|---|---|---|---|---|
+| TC01 | Validation service available | Submit valid survey data | ticket_id=1001, date_id=20261001, score=5, nps_score=10 | Data accepted | High | Pending execution | PENDING |
+| TC02 | Validation service available | Submit survey without comment and with null comment | comment omitted / null | Data accepted | Medium | Pending execution | PENDING |
+| TC03 | Validation service available | Test minimum and maximum CSAT values | score=1 and score=5 | Both values accepted | High | Pending execution | PENDING |
+| TC04 | Validation service available | Test minimum and maximum NPS values | nps_score=0 and nps_score=10 | Both values accepted | High | Pending execution | PENDING |
+| TC05 | Validation service available | Submit invalid request body types | null, list, string, integer | ValidationError returned | High | Pending execution | PENDING |
+| TC06 | Validation service available | Remove required fields | ticket_id, date_id, score, nps_score | Missing field rejected | High | Pending execution | PENDING |
+| TC07 | Validation service available | Submit incorrect data types and invalid IDs | String IDs, boolean score, zero/negative ID | ValidationError returned | High | Pending execution | PENDING |
+| TC08 | Validation service available | Submit scores outside allowed ranges | CSAT=0,6; NPS=-1,11 | Invalid values rejected | High | Pending execution | PENDING |
+| TC09 | Business rule mocks configured | Submit survey for missing or unclosed ticket | Ticket missing / OPEN / PENDING / IN_PROGRESS | Survey rejected | High | Pending execution | PENDING |
+| TC10 | Business rule mocks configured | Submit survey with missing date | date_id not found | Survey rejected | High | Pending execution | PENDING |
+| TC11 | Existing survey configured | Submit duplicate survey and update current survey | Existing response_id=77 | Duplicate rejected; current record update validation accepted | High | Pending execution | PENDING |
+| TC12 | Validation service available | Run identical validation twice | Same valid survey data | Both results identical | Medium | Pending execution | PENDING |
 
-Sau khi chạy, cập nhật:
-- Số test case đã chạy thật: ___
-- PASS: ___
-- FAIL: ___
-- Thời gian: ___
-- Kết quả tổng quát: ___
+## 3. Test Execution Summary
 
-## 4. Đánh giá 5 nhóm
-| Nhóm | Trạng thái sau khi bổ sung | Ghi chú |
-|---|---|---|
-| Luồng đúng (Positive) | Có test | Dữ liệu hợp lệ, comment tùy chọn |
-| Biên (Boundary) | Có test | CSAT 1/5; NPS 0/10 |
-| Dữ liệu sai (Negative) | Có test | Thiếu trường, sai kiểu, ngoài miền |
-| Bảo mật/chất lượng dữ liệu | Có kiểm tra chất lượng dữ liệu | Kiểm tra QT-10 và chống trùng bằng mock; **chưa** kiểm thử xác thực/phân quyền hoặc bảo mật API |
-| Tái lập (Reproducibility) | Có test cơ bản | So sánh kết quả xác thực lặp lại; chưa phải kiểm thử tái lập môi trường/database độc lập |
+- Expected collected test cases: 38
+- Actual executed test cases: Pending
+- PASS: Pending
+- FAIL: Pending
+- Execution time: Pending
 
-## 5. Giới hạn
-- Các test nghiệp vụ dùng mock repository, không thay thế kiểm thử tích hợp PostgreSQL.
-- Chưa có test client cho toàn bộ endpoint CRUD.
-- Chưa có kiểm thử đăng nhập/phân quyền vì source hiện tại chưa triển khai cơ chế này.
-- Chưa có kiểm thử hiệu năng và kiểm thử giao diện.
+## 4. Testing Categories
 
-## 6. Minh chứng
-Lưu ảnh chụp terminal sau khi chạy pytest vào thư mục `docs/screenshots/`. Chỉ đưa ảnh kết quả chạy thật, không dùng ảnh minh họa hoặc kết quả dự kiến.
+| Category | Covered |
+|---|---|
+| Positive Testing | Yes |
+| Boundary Testing | Yes |
+| Negative Testing | Yes |
+| Data Quality Testing | Yes |
+| Reproducibility Testing | Yes |
 
-## 7. Kiểm thử tự động bằng GitHub Actions (CI)
+## 5. Testing Limitations
 
-Workflow được cấu hình tại `.github/workflows/python-tests.yml`. Workflow tự động cài đặt Python 3.13 và các thư viện trong `requirements.txt`, sau đó chạy toàn bộ Pytest khi có push hoặc pull request vào nhánh `main`/`master`; có thể chạy thủ công bằng `workflow_dispatch`.
+- Current tests focus on service-layer validation.
+- Business rules use mocked repository methods.
+- Full PostgreSQL integration testing has not been implemented.
+- Complete API and frontend testing have not been implemented.
+- Authentication and authorization testing remain outstanding.
 
-**Trạng thái CI:** Chưa xác nhận. Chỉ cập nhật thành PASS sau khi workflow thực sự chạy thành công trên GitHub Actions.
+## 6. Evidence
 
-**Trang theo dõi:** `https://github.com/HaiVLU/cdtn1-NguyenHoTrungHai-L8/actions`
+Actual pytest terminal screenshots must be stored in:
+
+`docs/screenshots/`
+
+Do not report PASS without an actual successful execution.
+
+## 7. Continuous Integration
+
+GitHub Actions workflow:
+
+`.github/workflows/python-tests.yml`
+
+CI status must be updated after checking the actual GitHub Actions execution.
