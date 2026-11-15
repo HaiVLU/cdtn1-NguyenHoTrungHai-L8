@@ -1,21 +1,23 @@
+
 services:
   db:
     image: postgres:16-alpine
     container_name: l8-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: l8_csat_nps
-      POSTGRES_USER: l8_user
-      POSTGRES_PASSWORD: l8_local_password
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: ${POSTGRES_DB:-l8_csat_nps}
+      POSTGRES_USER: ${POSTGRES_USER:-l8_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-l8_local_password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U l8_user -d l8_csat_nps"]
+      test:
+        - CMD-SHELL
+        - pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 10s
 
   backend:
     build:
@@ -23,18 +25,31 @@ services:
       dockerfile: Dockerfile
     container_name: l8-backend
     restart: unless-stopped
-    env_file:
-      - .env
     environment:
-      DATABASE_URL: postgresql+psycopg://l8_user:l8_local_password@db:5432/l8_csat_nps
+      SECRET_KEY: ${SECRET_KEY:-local-development-secret}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-l8_user}:${POSTGRES_PASSWORD:-l8_local_password}@db:5432/${POSTGRES_DB:-l8_csat_nps}
     ports:
       - "5000:5000"
     depends_on:
       db:
         condition: service_healthy
-    command: >
-      sh -c "flask --app run:app db upgrade &&
-             flask --app run:app run --host=0.0.0.0 --port=5000"
+    command:
+      - sh
+      - -c
+      - >
+        flask --app run:app db upgrade &&
+        python seed.py &&
+        flask --app run:app run --host=0.0.0.0 --port=5000
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=3)"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   frontend:
     build:
@@ -45,7 +60,18 @@ services:
     ports:
       - "5173:5173"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:5173').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
 volumes:
   postgres_data:
