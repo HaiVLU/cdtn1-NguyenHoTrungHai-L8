@@ -8,66 +8,125 @@
 |---|---|
 | Operating System | Windows 10/11, Linux or macOS |
 | Docker | Docker Desktop with Docker Compose |
-| Memory | 4 GB RAM minimum recommended |
-| Disk Space | Sufficient space for Docker images and database |
-| Frontend Port | 8080 |
+| Python | Not required on the host when using Docker |
+| Node.js | Not required on the host when using Docker |
+| PostgreSQL | Runs inside Docker |
+| Memory | At least 4 GB RAM recommended |
 | Backend Port | 5000 |
+| Frontend Port | 5173 |
 | Database Port | Internal Docker network |
 
-No local Python, Node.js or PostgreSQL installation is required when using Docker Compose.
+The application uses three services:
+
+- PostgreSQL 16: Database service.
+- Flask: Backend REST API.
+- React with Vite: Frontend application.
 
 ## 2. Deployment Steps
 
-### Step 1 – Configure Environment
+### Step 1 – Clone the repository
 
-Copy the example environment file:
+```bash
+git clone https://github.com/HaiVLU/cdtn1-NguyenHoTrungHai-L8.git
+cd cdtn1-NguyenHoTrungHai-L8
+```
+
+For the submission version, use the v1.0 tag:
+
+```bash
+git checkout v1.0
+```
+
+### Step 2 – Configure environment variables
+
+On Windows PowerShell:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Update the environment variables using local values.
+On Linux or macOS:
 
-### Step 2 – Build and Start Services
+```bash
+cp .env.example .env
+```
 
-```powershell
+The example configuration is intended for local academic testing.
+
+### Step 3 – Build and start the application
+
+```bash
 docker compose up -d --build
 ```
 
-### Step 3 – Check Service Status
+Docker Compose starts the database, backend and frontend services.
 
-```powershell
+The Backend automatically performs database migration and executes the sample data script.
+
+### Step 4 – Verify service status
+
+```bash
 docker compose ps
 ```
 
-All required services must report a healthy status.
+Expected result:
+
+- l8-postgres: healthy
+- l8-backend: healthy
+- l8-frontend: healthy
 
 ## 3. Environment Variables
 
-| Variable | Description | Required |
-|---|---|---|
-| SECRET_KEY | Flask application secret | Yes |
-| DATABASE_URL | PostgreSQL connection string | Yes |
+| Variable | Description | Required | Example |
+|---|---|---|---|
+| SECRET_KEY | Flask application secret key | Yes | local-development-secret |
+| POSTGRES_DB | PostgreSQL database name | Yes | l8_csat_nps |
+| POSTGRES_USER | PostgreSQL username | Yes | l8_user |
+| POSTGRES_PASSWORD | PostgreSQL password | Yes | l8_local_password |
+| DATABASE_URL | Local development database connection | Outside Docker | postgresql+psycopg://l8_user:l8_local_password@localhost:5432/l8_csat_nps |
 
-Actual example values must match the committed `.env.example`.
+Inside Docker, the Backend uses the database hostname `db`.
+
+Do not commit the actual `.env` file or production credentials.
 
 ## 4. Sample Data
 
-The application uses the project's existing database migration and seed process.
+The project uses:
 
-Seed script:
+- `migrations/`: Database schema migration.
+- `seed.py`: Sample data initialization.
 
-`seed.py`
+The startup command runs:
 
-Sample records are created using the existing project data definitions.
+```bash
+flask --app run:app db upgrade
+python seed.py
+```
 
-The seed process must be tested twice to verify that duplicate records are not created.
+The current seed script creates sample records for:
 
-Actual record counts must be recorded after deployment.
+- Service centers
+- Technicians
+- Customers
+- Date dimension
+- Closed warranty tickets
+- Survey responses
+
+The seed script checks whether a service center already exists before inserting the sample dataset.
+
+Record counts must be verified from the actual database after deployment.
+
+To execute the seed script manually:
+
+```bash
+docker compose exec backend python seed.py
+```
+
+Run the command a second time and verify that no duplicate sample dataset is created.
 
 ## 5. System Verification
 
-### Backend Health Check
+### 5.1. Check Backend Health
 
 ```powershell
 Invoke-RestMethod http://localhost:5000/health
@@ -82,28 +141,60 @@ Expected response:
 }
 ```
 
-### Survey API
+### 5.2. Check Survey API
 
 ```powershell
 Invoke-RestMethod http://localhost:5000/api/surveys
 ```
 
-Expected result: HTTP 200 and a JSON response.
+Expected result:
 
-### Frontend
+- HTTP 200
+- JSON response
+- Survey data returned when sample records exist.
+
+### 5.3. Check Frontend
 
 Open:
 
-`http://localhost:8080`
+http://localhost:5173
 
-Expected result: The Smart CRM login page is displayed.
+Expected result:
 
-### Automated Tests
+The Smart CRM login page is displayed.
 
-```powershell
+### 5.4. Run Automated Tests
+
+```bash
 docker compose exec backend python -m pytest -o pythonpath=. -v
 ```
 
-Expected result: All collected tests pass.
+Expected result:
 
-Actual deployment results and screenshots must be recorded before submission.
+All collected tests pass.
+
+Record the actual number of passed and failed tests.
+
+### 5.5. Inspect Application Logs
+
+```bash
+docker compose logs --tail=100
+```
+
+Expected result:
+
+No startup, migration or database connection errors.
+
+## 6. Stop the Application
+
+```bash
+docker compose down
+```
+
+To remove the database volume as well:
+
+```bash
+docker compose down -v
+```
+
+Warning: The second command permanently removes the Docker database volume and its stored records.
