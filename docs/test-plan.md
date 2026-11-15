@@ -5,74 +5,97 @@
 
 ### 1.1. In Scope
 
-The testing focuses on the survey validation and business rules implemented in the Backend.
+The testing covers the implemented CSAT/NPS survey validation logic.
 
-- Validate survey request data using `validate(data)`.
-- Check required fields and data types.
-- Check CSAT score range from 1 to 5.
-- Check NPS survey score range from 0 to 10.
-- Verify QT-10: a warranty ticket must exist and be closed before accepting a survey.
-- Verify the survey date exists.
-- Prevent duplicate survey responses for the same warranty ticket.
+- Validate JSON object structure.
+- Validate required survey fields.
+- Validate integer data types.
+- Validate positive ticket_id and date_id.
+- Validate CSAT score from 1 to 5.
+- Validate NPS survey score from 0 to 10.
+- Validate optional comment.
+- Verify QT-10: the warranty ticket must exist and be closed.
+- Verify that the survey date exists.
+- Prevent duplicate survey responses for the same ticket.
 - Verify that updating the current survey does not trigger a duplicate error.
-- Verify repeatable validation results.
+- Verify deterministic validation results.
 
 ### 1.2. Out of Scope
 
-- Full PostgreSQL integration testing.
-- Complete CRUD API testing.
-- React UI and browser compatibility testing.
-- Authentication and authorization testing.
+The following tests are not implemented in the current test suite:
+
+- Real PostgreSQL integration tests.
+- Complete API integration tests.
+- Frontend browser tests.
+- Backend authentication and authorization tests.
+- Service-center ownership access control.
 - Performance and load testing.
 - Penetration testing.
 
-These areas are excluded because the current automated test suite focuses on service-layer validation and uses mocked repositories.
+These areas are excluded because the current automated suite focuses on service-layer validation and uses mocked repository methods.
 
 ## 2. Test Types and Quantities
 
-| Test Type | Quantity | Description |
+| Test Type | Quantity | Implementation |
 |---|---:|---|
-| Unit Test | 38 expected pytest cases | Survey validation and business rules |
-| Integration Test | 0 | Not implemented |
-| API Test | 0 | Not implemented |
-| End-to-End Test | 0 | Not implemented |
-| Total | 38 expected cases | Subject to execution verification |
+| Unit Testing | 38 expected cases | pytest |
+| Integration Testing | 0 | Not implemented |
+| API Testing | 0 | Not implemented |
+| End-to-End Testing | 0 | Not implemented |
+| Total | 38 expected cases | Verify during execution |
 
-The 38 cases include parameterized test scenarios.
+The test suite uses parameterized test scenarios.
 
-The Test Report presents 12 representative test scenarios covering the five required testing categories.
+The Test Report contains 12 representative test cases.
 
 ## 3. Measurable Success Criteria
 
-- All 38 collected pytest cases must PASS.
-- All required survey fields must be validated.
-- CSAT values must remain within 1–5.
-- NPS survey scores must remain within 0–10.
-- QT-10 business rules must be enforced.
+- All collected unit test cases must PASS.
+- Required fields must be validated.
+- CSAT scores must be within 1–5.
+- NPS survey scores must be within 0–10.
+- QT-10 must reject missing or unclosed warranty tickets.
 - Duplicate survey responses must be rejected.
-- Repeated validation with identical input must produce identical results.
+- Identical input must produce identical validation results.
 - No unresolved Critical bug may remain.
 
-The test results must be recorded from an actual execution.
+Actual results must be recorded after execution.
 
 ## 4. Test Environment and Test Data
 
 | Item | Configuration |
 |---|---|
-| Operating System | Windows |
-| Python | 3.13.5 |
-| Testing Framework | pytest 9.2.0 |
-| Backend | Flask |
-| Database | PostgreSQL is used by the application; unit tests do not access the real database |
-| Test File | `tests/test_survey_validation.py` |
-| Test Data | Deterministic data defined in the test file |
-| Repository Mocking | Mock repository methods |
-| Test Execution | `python -m pytest -o pythonpath=. -v` |
+| Operating System | Windows 10/11 |
+| Python | 3.13.x |
+| Framework | Flask |
+| Test Framework | pytest |
+| Database | PostgreSQL 16 for application runtime |
+| Test Database | Not used by current unit tests |
+| Test File | tests/test_survey_validation.py |
+| Test Data | Deterministic data defined in test file |
+| Repository | Mocked repository methods |
 
-The current unit tests do not insert or delete records in PostgreSQL. Repository methods are mocked to isolate the service-layer validation logic.
+Test execution:
+
+python -m pytest -o pythonpath=. -v
 
 ## 5. Test Execution Criteria
 
-Testing is considered successful when all collected test cases pass without collection errors.
+Testing is successful when:
 
-Actual PASS/FAIL results and execution time must be recorded in the Test Report.
+- All collected test cases pass.
+- No test collection error occurs.
+- The execution result is repeatable.
+- Actual PASS/FAIL results and execution time are recorded.
+
+## 6. Known Testing Limitations
+
+The current suite does not verify:
+
+- Real PostgreSQL transactions.
+- All REST API responses.
+- Authentication and authorization.
+- Frontend user interactions.
+- Service-center ownership restrictions.
+
+These limitations must not be interpreted as completed testing.

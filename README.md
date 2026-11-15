@@ -330,3 +330,154 @@ Nếu build thành công, Vite tạo thư mục `dist/` chứa sản phẩm buil
 **Dự án:** Smart CRM – Mekong Mobile  
 **Học phần:** Chuyên đề tốt nghiệp 2  
 **Track:** Software Engineering (SE)
+
+
+
+# Smart CRM – Mekong Mobile (L8)
+
+## 1. Project Information
+
+- Course: Chuyên đề tốt nghiệp 1
+- Assignment: BT3 – Testing and Prototype Packaging
+- Project: Smart CRM – Mekong Mobile
+- Business Flow: L8 – CSAT/NPS Customer Satisfaction Survey
+- Track: Software Engineering (SE)
+- Student: Nguyễn Hồ Trung Hải
+- Student ID: 2374802010125
+
+## 2. Project Overview
+
+Smart CRM – Mekong Mobile is a prototype for managing customer satisfaction surveys after warranty tickets are closed.
+
+The system provides:
+- CSAT and NPS survey management.
+- Service center information.
+- Technician performance reports.
+- Survey detail information.
+- CSAT/NPS reporting dashboards.
+
+## 3. Technology Stack
+
+| Component | Technology |
+|---|---|
+| Frontend | React, Vite |
+| Backend | Python, Flask |
+| Database | PostgreSQL 16 |
+| ORM | Flask-SQLAlchemy |
+| Migration | Flask-Migrate |
+| Testing | pytest |
+| Packaging | Docker Compose |
+
+## 4. Repository Structure
+
+```text
+.
+├── docs/
+├── frontend/
+├── migrations/
+├── src/
+│   ├── repositories/
+│   ├── routes/
+│   └── services/
+├── tests/
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── seed.py
+├── run.py
+└── README.md
+```
+
+## 5. Deployment
+
+### Requirements
+
+- Docker Desktop
+- Docker Compose
+- Git
+
+No local Python, Node.js or PostgreSQL installation is required.
+
+### Start the Application
+
+Run the following commands from the project root in Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+```powershell
+docker compose up -d --build
+```
+
+If `.env` already exists, do not overwrite it.
+
+### Application URLs
+
+| Service | URL |
+|---|---|
+| Frontend | http://localhost:5173 |
+| Backend Health | http://localhost:5000/health |
+| Survey API | http://localhost:5000/api/surveys |
+
+### Verify Services
+
+```powershell
+docker compose ps
+```
+
+The database, backend and frontend services should report healthy status.
+
+### Stop Services
+
+```powershell
+docker compose down
+```
+
+To remove database volume:
+
+```powershell
+docker compose down -v
+```
+
+Warning: Removing the volume deletes stored database records.
+
+## 6. Testing
+
+Run the automated test suite:
+
+```powershell
+docker compose exec backend python -m pytest -o pythonpath=. -v
+```
+
+The test suite covers:
+- Positive testing.
+- Boundary testing.
+- Negative testing.
+- Business rule validation.
+- Data quality testing.
+- Reproducibility testing.
+
+Actual test results are documented in `docs/test-report.md`.
+
+## 7. Documentation
+
+| Document | Description |
+|---|---|
+| docs/test-plan.md | Test strategy and scope |
+| docs/test-report.md | Test case execution results |
+| docs/bug-log.md | Defect tracking |
+| docs/deployment-guide.md | Deployment instructions |
+| docs/checklist-bao-mat.md | Security assessment |
+| docs/api-docs.md | REST API documentation |
+| docs/ai-disclosure.md | AI usage declaration |
+| docs/thay-doi-thiet-ke.md | Design changes from BT2 |
+
+## 8. Known Limitations
+
+- Backend authentication and authorization are not fully implemented.
+- Service-center ownership access control is not implemented.
+- Automated tests primarily cover service-layer validation.
+- Full PostgreSQL integration and frontend E2E testing are not implemented.
+
+This prototype is intended for academic demonstration and evaluation.
